@@ -1248,3 +1248,148 @@ One runnable app.py (plus a small db.py / streak.py if you split concerns) — n
 SQLite file created automatically on first run if it doesn't exist.
 No placeholder/mock data left in the final UI beyond an optional first-run seed the user can delete.
 Favor clear, direct code over abstraction — this is a scoped MVP, not a framework.
+
+
+
+REASONING.md — an explanation of the thought process behind the solution.
+
+
+is project k according is file ka content ke points suggest kar
+taki unhe mai khud se likh saku
+
+`REASONING.md` ka basic purpose hota hai reviewer ko ye samjhana ki tumne **kya socha, kyun socha, aur tradeoffs kya liye**. Isme code copy-paste karne ke bajay engineering decisions aur unke piche ki reasoning explain karni hoti hai.
+
+Isko structured format me draft karne ke liye ye core sections aur key points cover karo:
+
+---
+
+### 1. Problem Deconstruction & Core Philosophy
+
+* **From Ambiguity to Constraints:** Explain karo ki problem statement open-ended tha, lekin 2.5 hours ke constraint me success ka criteria kya set kiya (zero-friction morning routine vs complex feature bloat).
+* **The "Morning Open" Principle:** Clarify karo ki Ananya ka subah ka workflow 10 seconds se lamba nahi hona chahiye—app khulte hi sirf aaj ke actionable items dikhne chahiye, koi unnecessary dashboards ya extra navigation clicks nahi.
+
+### 2. Architectural & Tech Stack Tradeoffs
+
+* **Why Streamlit over React/Node or Django:**
+* Full-stack setup (Node backend + React build step + API routing) 2.5 ghante ke timeline ko eat up kar deta.
+* Streamlit reactive state, instant UI re-renders, aur backend execution ek single runtime me deta hai.
+
+
+* **Why SQLite over In-Memory (Dicts) or LocalStorage/JSON:**
+* LocalStorage browser-tied hota hai aur crash/incognito me data lose karta hai.
+* Relational schema (Habits aur Completions table) data integrity ensure karta hai, aur composite primary key se accidental duplicate logs automatically eliminate ho jaate hain.
+
+
+
+### 3. Streak Engine Logic (The Hardest Technical Decision)
+
+* **Dynamic Calculation vs Stored Integer Counters:**
+* Ye explain karo ki `streak = streak + 1` column me store karna ek bad practice kyun hai (concurrency bug, rollback issues, aur weekend calculation fail hona).
+* Solution: Streaks pure date-history se on-the-fly dynamically evaluate hoti hain.
+
+
+* **The Weekday Skipping Problem:**
+* Friday ko completed habit ka streak Monday subah break nahi hona chahiye. Engine Saturday aur Sunday ko invalid schedule maankar backward pointer me skip karta hai.
+
+
+* **Psychological Safety in Streak State:**
+* Subah uthte hi streak `0` nahi honi chahiye agar aaj ka task pending hai. Logic check karta hai ki kya *previous valid day* completed tha; agar haan, toh current streak alive rehti hai taaki user demotivate na ho.
+
+
+
+### 4. Data Retention & Archival Strategy
+
+* **Soft Deletion vs Hard Deletion (`archived = 1`):**
+* User jin habits ko give-up kar chuka hai, unhe permanently delete karna historical streak aur all-time effort ko wipe out kar deta hai.
+* Soft delete active view se habit ko hata deta hai (denominator reduce karta hai), lekin all-time completion logs ko intact rakhta hai.
+
+
+
+### 5. Deliberate Scope Exclusions (What Was Skipped & Why)
+
+* **Auth / User Login:** Single-user local context ke liye 2.5 hours me auth layer add karna time waste tha.
+* **Complex Push Notifications:** Morning browser ya desktop alerts OS-level dependencies add karte hain, jo portability break karte hain.
+* **Over-engineered Gamification:** Badges, XP points, aur leaderboards add na karke sirf clean flame (`🔥`) aur best record (`⭐`) par focus rakha taaki app simple aur reliable rahe.
+
+---
+
+
+
+do the same for readme.md
+`README.md` project ka face hota hai. Reviewer ya evaluator sabse pehle yehi file dekhta hai code chalane ke liye. Isme implementation detail ke bajay **project overview, quickstart setup, features, aur project structure** par focus hona chahiye.
+
+Apne `README.md` me ye core sections aur key points cover karo:
+
+---
+
+### 1. Title & Value Proposition
+
+* **Project Name & Tagline:** Clear title (e.g., `75-Day Challenge - Focused Habit Tracker`) aur ek line ka description ki ye tool kiske liye hai aur kya problem solve karta hai.
+* **Badges / Tech Pills:** Python 3.10+, Streamlit, SQLite.
+
+### 2. Core Features (User-Facing)
+
+* **Today's Dashboard:** Subah khulte hi sirf scheduled habits ka display, challenge day counter (Day X / 75), aur daily completion percentage bar.
+* **Smart Calendar-Aware Streaks:** Current streak (`🔥`) aur all-time best streak (`⭐`) jo daily aur weekday schedules ko samajhta hai (weekends chain break nahi karte).
+* **Frictionless Logging:** One-click instant completion toggle with automatic local persistence.
+* **Quick Search & Filter:** Badi lists me instantly habit locate karne ke liye real-time substring search.
+* **Soft Archival (Zero Data Loss):** Abandoned habits ko dashboard se hide karna bina historical completion data wipe kiye.
+* **In-Place Habit Management:** New habit creation, renaming, aur frequency modification via popovers/dialogs.
+
+### 3. Tech Stack Breakdown
+
+* **Frontend & Runtime:** Streamlit (UI rendering, reactivity, session state management).
+* **Database / Persistence:** SQLite (Local zero-config relational database via standard library `sqlite3`).
+* **Core Logic:** Pure Python `datetime` calculations (No third-party date parsing dependencies).
+
+### 4. Quick Start / Installation Steps
+
+Reviewer code ko 2 minute me execute kar sake, isliye exact copy-pasteable terminal commands do:
+
+* **Prerequisites:** Python version specification (`Python 3.9+`).
+* **Environment Setup (Optional but professional):**
+```bash
+python -m venv venv
+source venv/bin/activate  # Windows: venv\Scripts\activate
+
+```
+
+
+* **Install Dependencies:**
+```bash
+pip install streamlit
+
+```
+
+
+* **Run Application:**
+```bash
+streamlit run app.py
+
+```
+
+
+
+### 5. Project Directory Structure
+
+Clean, scannable ASCII tree structure:
+
+```text
+habit-tracker/
+│
+├── app.py              # Main application entry point (UI + Business Logic)
+├── habits.db           # SQLite database (auto-generated on first run)
+├── requirements.txt    # Minimal dependencies (streamlit)
+├── README.md           # Project overview and setup instructions
+└── REASONING.md        # Engineering decisions & architectural trade-offs
+
+```
+
+### 6. Data Integrity & Edge Case Handling
+
+* Brief note on why SQLite with composite keys `(habit_id, completed_date)` use kiya gaya hai (duplicate prevent karne ke liye).
+* Database automatic schema initialization aur initial seed data ka mention (taaki first run empty na dikhe).
+
+---
+
+
