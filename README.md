@@ -1,4 +1,3 @@
-```markdown
 # Habit Tracker
 
 A minimal, friction-free habit tracking engine built for high-accountability challenges (like the 75-Day Hard challenge). Engineered to solve the core morning routine problem: immediate visibility of scheduled tasks, one-click logging, resilient streak mathematics, and clutter management.
@@ -27,22 +26,18 @@ A minimal, friction-free habit tracking engine built for high-accountability cha
 ## Quick Start
 
 ### 1. Prerequisites
+
 Ensure Python 3.10 or above is installed on your system.
 
 ### 2. Install Dependencies
-```bash
-pip install streamlit
 
-```
+pip install streamlit
 
 ### 3. Run the Application
 
-```bash
 streamlit run app.py
 
-```
-
-The app will open automatically in your default browser at `http://localhost:8501`.
+The app will open automatically in your default browser at http://localhost:8501.
 
 ---
 
@@ -83,14 +78,8 @@ Streaks are **never stored as static integer counters**; they are dynamically co
 
 ## Project Structure
 
-```text
+habit-tracker/
 ├── app.py           # Core application code (UI, DB queries, streak engine)
 ├── habits.db        # SQLite database (auto-generated on first run)
 ├── README.md        # Project overview and setup instructions
 └── REASONING.md     # Architectural trade-offs and design decisions
-
-```
-
-```
-
-```
