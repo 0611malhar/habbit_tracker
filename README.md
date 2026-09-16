@@ -73,13 +73,3 @@ Streaks are **never stored as static integer counters**; they are dynamically co
 1. **Schedule Awareness:** Days that fall outside the habit's frequency (e.g., Saturday/Sunday for weekday habits) are skipped in the verification sequence.
 2. **Grace Period (Active Day):** A streak does not reset to zero at the start of an incomplete day. As long as the *previous scheduled day* was completed, the streak remains alive.
 3. **Historical Scan:** The all-time completion set is traversed chronologically to evaluate continuous valid day chains and compute the **All-Time Best Streak**.
-
----
-
-## Project Structure
-
-habit-tracker/
-├── app.py           # Core application code (UI, DB queries, streak engine)
-├── habits.db        # SQLite database (auto-generated on first run)
-├── README.md        # Project overview and setup instructions
-└── REASONING.md     # Architectural trade-offs and design decisions
